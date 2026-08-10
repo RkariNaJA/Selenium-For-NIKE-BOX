@@ -1,4 +1,4 @@
-# Selenium For BOX — Nike BOX File Downloader & Combine Flow
+# Selenium For BOX — Nike BOX File Downloader & Combine Flow (For dbo.PPS => PPS,ACS,WISDOM)
 
 An automated pipeline that (1) downloads the weekly **APPS FOB List** Excel files from Nike's Box (app.box.com) for four companies — **HIC, HIT, HSN, HTV** — then (2) combines them into a single Excel file and archives the originals into a dated folder. A flow runner orchestrates the whole sequence and writes a summary log.
 
