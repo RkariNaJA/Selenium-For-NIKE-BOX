@@ -20,7 +20,7 @@ class NikeBOXAutomator:
         self.email = os.getenv("BOX_EMAIL")
         self.password = os.getenv("BOX_PASSWORD")
 
-        self.base_path = r"C:\Users\chayodom.k\Desktop\Pyrhon Refresh File\Selenium For BOX\Download"
+        self.base_path = r"D:\path\to\Selenium For BOX\Download"
 
         options = webdriver.ChromeOptions()
         options.add_argument("--start-maximized")

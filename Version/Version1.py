@@ -20,7 +20,7 @@ class NikeBOXAutomator:
         self.password = os.getenv("BOX_PASSWORD")
 
         # build + create the download folder now, so Chrome can use it
-        base_path = r"C:\Users\chayodom.k\Desktop\Pyrhon Refresh File\Selenium For BOX\Download"
+        base_path = r"D:\path\to\Selenium For BOX\Download"
         today = datetime.now().strftime("%Y-%m-%d")
         self.download_path = os.path.join(base_path, f"HIC_{today}")
         os.makedirs(self.download_path, exist_ok=True)
