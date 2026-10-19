@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 import os
 from datetime import datetime
@@ -32,6 +33,8 @@ class NikeBOXAutomator:
         })
 
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        # --start-maximized can give a small window on servers/RDP, which hides Box columns
+        self.driver.set_window_size(1920, 1080)
         self.wait = WebDriverWait(self.driver, 20)
 
     def login(self):
@@ -103,11 +106,17 @@ class NikeBOXAutomator:
 
     def click_updated_sort(self):
         print("Clicking UPDATED column header...")
-        updated_header = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH,
-                "//a[contains(@class,'SortableHeaderRenderer-link')][.//div[normalize-space()='UPDATED']]"
-            ))
-        )
+        try:
+            updated_header = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH,
+                    "//a[contains(@class,'SortableHeaderRenderer-link')]"
+                    "[.//div[translate(normalize-space(),'updated','UPDATED')='UPDATED']]"
+                ))
+            )
+        except TimeoutException:
+            # Box hides the Updated column in narrow windows; download_file finds the row by name anyway
+            print("UPDATED header not found - skipping sort.")
+            return
         updated_header.click()
         print("Clicked UPDATED sort.")
         time.sleep(3)
@@ -154,7 +163,11 @@ class NikeBOXAutomator:
                 self.download_file()
 
         except Exception as e:
-            print(f"Error occurred: {e}")
+            print(f"Error occurred: {type(e).__name__}: {e}")
+            shot = os.path.join(self.base_path, "error_screenshot.png")
+            os.makedirs(self.base_path, exist_ok=True)
+            self.driver.save_screenshot(shot)
+            print(f"Screenshot saved -> {shot}")
             input("Error occurred. Press Enter to close the browser...")
 
         finally:
